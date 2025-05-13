@@ -45,8 +45,12 @@ int hash_function2(struct hash_table* hash_table, char* key) {
    * Currently this is the same as hash_function2, but your assignment is 
    * to modify it to create an improved hash function: 
    */
-
-  return ( (int) key[0] ) % hash_table->size;
+	unsigned long hash = 0;
+	const int p = 101;
+	for(int i = 0; i < strlen(key); i++){
+		hash = (hash * p + key[i]) % hash_table->size;
+	}
+	return hash;
 }
 
 struct hash_table* hash_table_create(int array_size) {
@@ -192,6 +196,18 @@ int hash_table_collisions(struct hash_table* hash_table) {
   int num_col = 0;
   
   // code goes here: 
+	for(int i = 0; i < hash_table->size; i++){
+		struct node* itr = hash_table->array[i];
+		int count = 0;
+		while(itr != NULL){
+			count++;
+			itr = itr->next;
+		}
+
+		if(count > 1){
+			num_col += (count - 1);
+		}
+	}
 
   return num_col;
 }
